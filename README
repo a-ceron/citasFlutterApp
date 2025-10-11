@@ -1,0 +1,75 @@
+Prompt 1: Estructura de la página principal de Tableros
+
+Diseña la UI de la página de Tableros con Flutter.
+
+Debe mostrar:
+
+Una lista de registros/citas del día con información básica (nombre cliente, procedimiento, hora, estado).
+
+Un botón fijo para descargar el reporte mensual.
+
+Al desplazarse, mostrar KPIs: ingresos del mes, número de citas atendidas, citas pendientes.
+
+Un Floating Action Button para abrir un modal que permita registrar un nuevo evento/cita.
+
+Debe distinguir entre vista móvil (lista vertical) y escritorio (cuadrícula o paneles).
+
+Incluir placeholders para datos dinámicos que se llenarán vía API.
+
+Prompt 2: Modal de registro de eventos
+
+Diseña el modal para registrar un nuevo evento/cita:
+
+Campos: cliente, procedimiento, fecha y hora, notas opcionales.
+
+Validaciones de formulario.
+
+Botón para guardar, con un loader mientras se guarda.
+
+Cierre del modal y refresco de la lista de citas al guardar exitosamente.
+
+Considera que este modal será usado desde móvil y escritorio.
+
+Prompt 3: KPIs y métricas del tablero
+
+Crear un panel de KPIs:
+
+Ingresos del mes.
+
+Número de citas atendidas.
+
+Número de citas pendientes.
+
+Otras métricas opcionales: promedio de duración de citas, procedencias de clientes, etc.
+
+Mostrar los KPIs en cards adaptables a la pantalla:
+
+Móvil: scroll horizontal o vertical.
+
+Escritorio: grid de 2-3 columnas.
+
+Cada KPI debe poder actualizarse dinámicamente sin recargar toda la página.
+
+Prompt 4: Endpoint para reportes y descarga
+
+Diseña un endpoint REST para descargar el reporte mensual:
+
+Debe recibir el mes y año como parámetros opcionales (por defecto mes actual).
+
+Debe generar un PDF o CSV con:
+
+Listado de citas, procedimientos, clientes, ingresos.
+
+Resumen de KPIs del mes.
+
+Retornar el archivo para que Flutter pueda abrir el diálogo de descarga.
+
+Prompt 5: Endpoints para la lista de citas y KPIs
+
+Crear 1-2 endpoints REST:
+
+/appointments/today → devuelve las citas del día, con información básica (cliente, procedimiento, hora, estado, notas).
+
+/dashboard/kpis → devuelve KPIs: ingresos del mes, número de citas atendidas y pendientes, promedio de duración, etc.
+
+Asegurarse de que estos endpoints permitan paginación o filtrado si hay muchas citas
