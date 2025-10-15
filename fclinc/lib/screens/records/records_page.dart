@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../services/api_service.dart';
+import '../../providers/auth_provider.dart';
+import '../../services/api_service.dart';
 import 'create_recor_page.dart';
 
 class RecordsPage extends StatefulWidget {

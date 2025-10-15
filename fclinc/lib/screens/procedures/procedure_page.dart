@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../services/api_service.dart';
-import 'create_procedure_dialog.dart';
+import '../../providers/auth_provider.dart';
+import '../../services/api_service.dart';
 import 'procedure_description_page.dart';
 
 class ProceduresPage extends StatefulWidget {
@@ -39,12 +38,12 @@ class _ProceduresPageState extends State<ProceduresPage> {
     }
   }
 
-  void _openCreateProcedureModal() {
-    showDialog(
-      context: context,
-      builder: (_) => const CreateProcedureDialog(),
-    ).then((_) => loadProcedures());
-  }
+  // void _openCreateProcedureModal() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (_) => const CreateProcedureDialog(),
+  //   ).then((_) => loadProcedures());
+  // }
 
   void _goToProcedureProfile(Map<String, dynamic> procedure) {
     if (procedure['id'] == null) return;
@@ -71,12 +70,12 @@ class _ProceduresPageState extends State<ProceduresPage> {
                 child: isTablet ? _buildGrid() : _buildList(),
               ),
             ),
-      floatingActionButton: !isTablet
-          ? FloatingActionButton(
-              onPressed: _openCreateProcedureModal,
-              child: const Icon(Icons.add),
-            )
-          : null,
+      // floatingActionButton: !isTablet
+      //     ? FloatingActionButton(
+      //         onPressed: _openCreateProcedureModal,
+      //         child: const Icon(Icons.add),
+      //       )
+      //     : null,
     );
   }
 
@@ -112,9 +111,9 @@ class _ProceduresPageState extends State<ProceduresPage> {
       elevation: 3,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: isNew
-            ? _openCreateProcedureModal
-            : () => _goToProcedureProfile(procedure),
+        // onTap: isNew
+        //     ? _openCreateProcedureModal
+        //     : () => _goToProcedureProfile(procedure),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: isNew

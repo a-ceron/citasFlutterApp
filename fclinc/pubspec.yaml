@@ -39,7 +39,12 @@ dependencies:
   http: ^1.2.0
   flutter_dotenv: ^5.1.0
   shared_preferences: ^2.1.0
-  intl: ^0.18.1   # <-- Agregar esta línea
+  intl: ^0.18.1
+  google_sign_in: ^6.2.1
+  flutter_secure_storage: ^9.0.0
+  font_awesome_flutter: ^10.10.0
+  flutter_web_auth_2: ^4.1.0
+  logger: ^2.6.2
   
 dev_dependencies:
   flutter_test:
@@ -64,7 +69,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/images/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

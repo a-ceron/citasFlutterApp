@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import 'employees_page.dart';
-import 'client_page.dart';
-import 'login_page.dart';
-import 'procedure_page.dart';
-import 'records_page.dart';
-import 'dash_page.dart';
+import '../../providers/auth_provider.dart';
+import '../employee/employees_page.dart';
+import '../clients/client_page.dart';
+import '../login/login_page.dart';
+import '../procedures/procedure_page.dart';
+import '../records/records_page.dart';
+import '../dash/dash_page.dart';
 
 class MainNavbarPage extends StatefulWidget {
   const MainNavbarPage({super.key});

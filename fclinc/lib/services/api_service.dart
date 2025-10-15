@@ -32,6 +32,22 @@ class ApiService {
     }
   }
 
+  /// Nuevo método: login con Google OAuth
+  Future<String?> loginWithGoogle(String code) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/google'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'code': code}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error en login Google: ${response.body}');
+    }
+
+    final data = jsonDecode(response.body);
+    return data['access_token'];
+  }
+
   Future<void> createRecord(String token, Map<String, dynamic> data) async {
     final response = await http.post(
       Uri.parse('$baseUrl/records'),
@@ -178,7 +194,7 @@ class ApiService {
 
   Future<String> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/login'),
+      Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
