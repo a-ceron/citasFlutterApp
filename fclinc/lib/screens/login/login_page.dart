@@ -23,10 +23,11 @@ class LoginPage extends StatefulWidget {
 /// clic en los botones. Tambien los elementos
 /// visuales que componen el login
 class _LoginPageState extends State<LoginPage> {
-  // Definimos las variables
+  // In-widgets
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  // Global vars
   bool _isPasswordVisible = false;
 
   @override
@@ -100,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  margin: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.all(10),
                   child: Padding(
                     padding: const EdgeInsets.all(24),
                     child: Column(
@@ -120,17 +121,14 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 12),
                         TextField(
                           controller: _passwordController,
-                          // La contraseña se oculta si _isPasswordVisible es false
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            // Botón de visibilidad de contraseña
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
-                                    ? Icons.visibility // Icono de ojo abierto
-                                    : Icons
-                                        .visibility_off, // Icono de ojo tachado
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
                                 setState(() {
