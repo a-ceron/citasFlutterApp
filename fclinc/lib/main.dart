@@ -1,53 +1,51 @@
 /*
   main.dart
-  Construcción del wigget mainApp para
-  la creación de la aplicación web
- */
+  Entry point for the FClinic Flutter Web App.
+*/
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/auth_provider.dart';
-import 'services/auth_wrapper.dart';
-import 'screens/login/login_google_success_page.dart';
-import 'config/theme.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
-/*
-  Construcción de la aplicación a partir de la 
-  instancia de widget FClinicAPP que contiene la 
-  estructura inicial de la aplicación.
- */
-void main() {
-  runApp(const FClinicApp());
+import 'config/theme.dart';
+import 'config/router.dart';
+import 'providers/auth_provider.dart';
+
+/// Entry point for the Flutter Web App
+/// Initializes Flutter engine
+/// Clean routes, auth handler and app
+/// config
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
+
+  final authProvider = AuthProvider();
+  await authProvider.loadToken();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => authProvider),
+      ],
+      child: const FClinicApp(),
+    ),
+  );
 }
 
-/**
-  Clase construcutra. No mutable
-  Nombre de la pagina: FCLinic
-  Tema: lightTheme
-  home: AuthWrapper()
- */
+/// Main Widget
 class FClinicApp extends StatelessWidget {
   const FClinicApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ],
-        child: MaterialApp(
-          title: 'FClinic',
-          theme: lightTheme,
-          home: const AuthWrapper(),
-          onGenerateRoute: (settings) {
-            final uri = Uri.parse(settings.name!);
-            if (uri.path == '/login/success') {
-              return MaterialPageRoute(
-                builder: (_) => const LoginSuccessPage(),
-              );
-            }
-            return MaterialPageRoute(builder: (_) => const AuthWrapper());
-          },
-        ));
+    final router = createRouter(context);
+
+    return MaterialApp.router(
+      title: 'FClinic',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+    );
   }
 }

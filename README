@@ -1,3 +1,59 @@
+lib/
+├── app.dart                         # Configura rutas, temas y navegación global
+├── main.dart                        # Punto de entrada (solo corre runApp)
+│
+├── config/
+│   ├── api_config.dart              # URLs y endpoints
+│   ├── theme.dart                   # Tema global
+│   └── env.dart                     # Variables de entorno (Google keys, base URLs)
+│
+├── core/
+│   ├── consts/                      # Constantes globales (colores, tamaños, etc.)
+│   ├── utils/                       # Funciones helper, formatters, date utils
+│   ├── widgets/                     # Widgets reutilizables (botones, loaders, etc.)
+│   └── errors/                      # Manejo centralizado de errores y exceptions
+│
+├── data/
+│   ├── models/                      # Modelos de datos (Appointment, Client, etc.)
+│   ├── services/                    # Acceso a APIs externas o BD local
+│   ├── providers/                   # Providers de estado (Auth, Dash, etc.)
+│   └── repositories/                # Capa intermedia entre servicios y UI
+│
+├── domain/                          # (nuevo) Reglas de negocio puras
+│   ├── entities/                    # Entidades de negocio limpias
+│   ├── usecases/                    # Casos de uso (GetEmployees, FetchReport, etc.)
+│   └── interfaces/                  # Contratos de repositorios
+│
+├── presentation/                    # (renombre sugerido de screens/)
+│   ├── auth/                        # login_page.dart, auth_wrapper.dart
+│   ├── dashboard/                   # dash_page.dart
+│   ├── employees/                   # employees_page.dart, employee_profile_page.dart
+│   ├── clients/                     # client_page.dart, client_profile_page.dart
+│   ├── procedures/                  # procedure_page.dart, procedure_description_page.dart
+│   ├── records/                     # records_page.dart, create_record_page.dart
+│   ├── main_nav/                    # main_navbar_page.dart
+│   └── widgets/                     # Widgets específicos de UI
+│
+├── services/
+│   ├── api_service.dart             # HTTP client general
+│   ├── google_auth_service.dart     # 🔥 Integración Google Auth
+│   └── google_calendar_service.dart # 🔥 Integración Calendar API
+│
+└── routes/
+    └── app_routes.dart              # Rutas con GoRouter o Navigator 2.0
+
+
+| Layer        | Purpose                                                              |
+| ------------ | -------------------------------------------------------------------- |
+| `config/`    | API URLs, themes, and environment setup                              |
+| `core/`      | Common utilities, constants, widgets, and error handling             |
+| `data/`      | Remote/local data logic: API providers and services                  |
+| `models/`    | Plain Dart data models (likely with `fromJson/toJson`)               |
+| `providers/` | State management (looks like you’re using `Provider` or `Riverpod`)  |
+| `screens/`   | UI pages for various entities (clients, employees, procedures, etc.) |
+| `services/`  | API and auth abstractions (`api_service.dart`, `auth_wrapper.dart`)  |
+
+
 Prompt 1: Estructura de la página principal de Tableros
 
 Diseña la UI de la página de Tableros con Flutter.

@@ -1,8 +1,16 @@
+/**
+ * screens/login/login_page.dart
+ * 
+ * Pantalla para el login de la aplicación
+ */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
-import '../../screens/utils/main_navbar_page.dart';
 
+/// Widget constructor de la pagina
+/// Creamos un estado que se esta esperando
+/// las acciones dentre del widget
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -10,37 +18,72 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+/// Construcción del widget
+/// Tenemos metodos que disparan la logica al dar
+/// clic en los botones. Tambien los elementos
+/// visuales que componen el login
 class _LoginPageState extends State<LoginPage> {
+  // Definimos las variables
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  /// Login local
-  Future<void> _handleLogin(AuthProvider auth) async {
+  bool _isPasswordVisible = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    final auth = context.read<AuthProvider>();
+
     final success = await auth.login(
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
 
     if (success && mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const MainNavbarPage()),
-      );
+      context.go('/dash');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage ?? 'Error al iniciar sesión')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(auth.errorMessage ?? 'Error al iniciar sesión')),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleGoogleLogin() async {
+    final auth = context.read<AuthProvider>();
+    try {
+      await auth.loginWithGoogle();
+      if (auth.isLoggedIn && mounted) {
+        context.go('/dash');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Error Google Login: ${auth.errorMessage ?? e.toString()}')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
+    // Use context.watch to only listen for changes to AuthProvider
+    final auth = context.watch<AuthProvider>();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: Stack(
         children: [
-          // Fondo
+          // Background
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -72,73 +115,75 @@ class _LoginPageState extends State<LoginPage> {
                         TextField(
                           controller: _emailController,
                           decoration: const InputDecoration(labelText: 'Email'),
+                          keyboardType: TextInputType.emailAddress,
                         ),
                         const SizedBox(height: 12),
                         TextField(
                           controller: _passwordController,
-                          decoration:
-                              const InputDecoration(labelText: 'Password'),
-                          obscureText: true,
+                          // La contraseña se oculta si _isPasswordVisible es false
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            // Botón de visibilidad de contraseña
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility // Icono de ojo abierto
+                                    : Icons
+                                        .visibility_off, // Icono de ojo tachado
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 24),
-                        auth.isLoading
-                            ? const CircularProgressIndicator()
-                            : Column(
+                        // Loading state handled globally for both buttons
+                        if (auth.isLoading)
+                          const CircularProgressIndicator()
+                        else
+                          Column(
+                            children: [
+                              ElevatedButton(
+                                onPressed: _handleLogin, // Simplified call
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 48),
+                                ),
+                                child: const Text('Login'),
+                              ),
+                              const SizedBox(height: 16),
+                              // Use const for the entire Row
+                              const Row(
                                 children: [
-                                  ElevatedButton(
-                                    onPressed: () => _handleLogin(auth),
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize:
-                                          const Size(double.infinity, 48),
-                                    ),
-                                    child: const Text('Login'),
+                                  Expanded(child: Divider()),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: Text('O'),
                                   ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    children: const [
-                                      Expanded(child: Divider()),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 8),
-                                        child: Text('O'),
-                                      ),
-                                      Expanded(child: Divider()),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  OutlinedButton.icon(
-                                    onPressed: () async {
-                                      final auth = Provider.of<AuthProvider>(
-                                          context,
-                                          listen: false);
-                                      try {
-                                        await auth.loginWithGoogle();
-                                        if (auth.isLoggedIn && mounted) {
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const MainNavbarPage()),
-                                          );
-                                        }
-                                      } catch (e) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  'Error Google Login: $e')),
-                                        );
-                                      }
-                                    },
-                                    icon: Image.asset(
-                                      'assets/images/google_logo.png',
-                                      height: 20,
-                                    ),
-                                    label:
-                                        const Text('Iniciar sesión con Google'),
-                                  )
+                                  Expanded(child: Divider()),
                                 ],
                               ),
+                              const SizedBox(height: 16),
+                              OutlinedButton.icon(
+                                onPressed:
+                                    _handleGoogleLogin, // Simplified call
+                                icon: Image.asset(
+                                  'assets/images/google_logo.png', // Must be added to pubspec.yaml
+                                  height: 20,
+                                ),
+                                label: const Text('Iniciar sesión con Google'),
+                                style: OutlinedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 48),
+                                  foregroundColor: colorScheme.onSurface,
+                                  side: BorderSide(color: colorScheme.outline),
+                                ),
+                              )
+                            ],
+                          ),
                       ],
                     ),
                   ),
