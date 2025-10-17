@@ -1,5 +1,5 @@
-import 'dart:html' as html;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/api_service.dart';
 
@@ -26,117 +26,107 @@ class AuthProvider extends ChangeNotifier {
   User? get user => _user;
   bool get isLoggedIn => accessToken != null;
 
-  /// 🔹 Carga el token desde almacenamiento local y obtiene datos del usuario
+  /// 🔹 Carga token y usuario al iniciar la app
   Future<void> loadToken() async {
-    isLoading = true;
-    notifyListeners();
+    _setLoading(true);
 
     final prefs = await SharedPreferences.getInstance();
     accessToken = prefs.getString('access_token');
 
     if (accessToken != null) {
       try {
-        final userData = await _apiService.getMe(accessToken!);
-        _user = User(
-          firstName: userData['first_name'] ?? '',
-          lastName: userData['last_name'] ?? '',
-          email: userData['email'] ?? '',
-        );
-      } catch (e) {
-        // Si el token ya no es válido, se limpia
-        accessToken = null;
-        _user = null;
-        await prefs.remove('access_token');
+        await _loadUser(accessToken!);
+      } catch (_) {
+        await _clearAuth();
       }
     }
 
-    isLoading = false;
-    notifyListeners();
+    _setLoading(false);
   }
 
-  /// 🔹 Inicia el flujo de login con Google (solo redirige)
+  /// 🔹 Redirige a Google OAuth (moderno, sin dart:html)
   Future<void> loginWithGoogle() async {
     const clientId =
         '269587646329-6vragflvdhklni3q8j8m3irv2o705epf.apps.googleusercontent.com';
     const redirectUri = 'http://127.0.0.1:5000/auth/callback';
 
-    final authUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
-        '?response_type=code'
-        '&client_id=$clientId'
-        '&redirect_uri=$redirectUri'
-        '&scope=openid%20email%20profile'
-        '&access_type=offline'
-        '&prompt=consent';
+    final authUrl = Uri.parse(
+      'https://accounts.google.com/o/oauth2/v2/auth'
+      '?response_type=code'
+      '&client_id=$clientId'
+      '&redirect_uri=$redirectUri'
+      '&scope=openid%20email%20profile'
+      '&access_type=offline'
+      '&prompt=consent',
+    );
 
-    html.window.location.href = authUrl;
+    // Abre la URL de login en una nueva pestaña o app externa
+    if (!await launchUrl(authUrl, mode: LaunchMode.externalApplication)) {
+      throw Exception('No se pudo abrir la URL de login');
+    }
   }
 
-  /// 🔹 Maneja el retorno desde Google (recibe token, obtiene user info)
+  /// 🔹 Maneja callback de Google
   Future<void> handleGoogleLoginSuccess({required String token}) async {
-    if (token.isEmpty) {
-      throw Exception('Token vacío recibido del callback');
-    }
+    if (token.isEmpty) throw Exception('Token vacío recibido');
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', token);
-    accessToken = token;
-
+    await _saveToken(token);
     try {
-      // Llama a tu backend para obtener info del usuario
-      final userData = await _apiService.getMe(token);
-      _user = User(
-        firstName: userData['first_name'] ?? '',
-        lastName: userData['last_name'] ?? '',
-        email: userData['email'] ?? '',
-      );
-      notifyListeners();
-    } catch (e) {
-      // Si algo falla, limpia el token
-      accessToken = null;
-      _user = null;
-      await prefs.remove('access_token');
+      await _loadUser(token);
+    } catch (_) {
+      await _clearAuth();
       rethrow;
     }
   }
 
-  /// 🔹 Login normal (email / password)
+  /// 🔹 Login normal email/password
   Future<bool> login(String email, String password) async {
-    isLoading = true;
+    _setLoading(true);
     errorMessage = null;
-    notifyListeners();
 
     try {
       final token = await _apiService.login(email, password);
-      accessToken = token;
+      await _saveToken(token);
+      await _loadUser(token);
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('access_token', token);
-
-      final userData = await _apiService.getMe(token);
-      _user = User(
-        firstName: userData['first_name'] ?? '',
-        lastName: userData['last_name'] ?? '',
-        email: userData['email'] ?? '',
-      );
-
-      isLoading = false;
-      notifyListeners();
+      _setLoading(false);
       return true;
     } catch (e) {
-      accessToken = null;
-      _user = null;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('access_token');
-
+      await _clearAuth();
       errorMessage = e.toString();
-      isLoading = false;
-      notifyListeners();
+      _setLoading(false);
       return false;
     }
   }
 
-  /// 🔹 Cierra sesión y limpia almacenamiento local
+  /// 🔹 Logout
   Future<void> logout() async {
+    await _clearAuth();
+  }
+
+  /// 🔹 PRIVATE METHODS
+  void _setLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
+  Future<void> _saveToken(String token) async {
+    accessToken = token;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('access_token', token);
+  }
+
+  Future<void> _loadUser(String token) async {
+    final userData = await _apiService.getMe(token);
+    _user = User(
+      firstName: userData['first_name'] ?? '',
+      lastName: userData['last_name'] ?? '',
+      email: userData['email'] ?? '',
+    );
+    notifyListeners();
+  }
+
+  Future<void> _clearAuth() async {
     accessToken = null;
     _user = null;
 
