@@ -43,56 +43,117 @@ class _MainNavbarPageState extends State<MainNavbarPage> {
   void _logout(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     auth.logout();
-
-    // Use GoRouter to navigate and remove all history
     context.go('/login');
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isWeb = MediaQuery.of(context).size.width >= 600;
+    final isWeb = MediaQuery.of(context).size.width >= 800;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(_titles[_selectedIndex]),
         actions: [
-          IconButton(
-            onPressed: () => _logout(context),
-            icon: const Icon(Icons.logout),
-            color: theme.colorScheme.error,
-            tooltip: 'Cerrar sesión',
+          PopupMenuButton<int>(
+            icon: CircleAvatar(
+              backgroundColor: theme.colorScheme.primary,
+              child: const Icon(Icons.person, color: Colors.white),
+            ),
+            onSelected: (value) {
+              if (value == 0) {
+                // Ir a perfil
+                context
+                    .go('/profile'); // Asegúrate de tener esta ruta en GoRouter
+              } else if (value == 1) {
+                // Cerrar sesión
+                final auth = Provider.of<AuthProvider>(context, listen: false);
+                auth.logout();
+                context.go('/login');
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 0,
+                child: Row(
+                  children: const [
+                    Icon(Icons.person_outline, color: Colors.black54),
+                    SizedBox(width: 8),
+                    Text('Perfil'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 1,
+                child: Row(
+                  children: const [
+                    Icon(Icons.logout, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Cerrar sesión'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
       body: Row(
         children: [
           if (isWeb)
-            NavigationRail(
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: _onItemTapped,
-              labelType: NavigationRailLabelType.selected,
-              selectedIconTheme:
-                  IconThemeData(color: theme.colorScheme.primary, size: 28),
-              selectedLabelTextStyle:
-                  TextStyle(color: theme.colorScheme.primary),
-              unselectedIconTheme:
-                  IconThemeData(color: theme.colorScheme.onSurface),
-              unselectedLabelTextStyle:
-                  TextStyle(color: theme.colorScheme.onSurface),
-              destinations: const [
-                NavigationRailDestination(
-                    icon: Icon(Icons.dashboard), label: Text('Dash')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.home), label: Text('Registros')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.people), label: Text('Empleados')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.person), label: Text('Clientes')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.medical_services),
-                    label: Text('Procedimientos')),
-              ],
+            Container(
+              width: 200,
+              color: theme.colorScheme.surface,
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  for (int i = 0; i < _titles.length; i++)
+                    InkWell(
+                      onTap: () => _onItemTapped(i),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: _selectedIndex == i
+                              ? theme.colorScheme.primary.withOpacity(0.1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            Icon(
+                              [
+                                Icons.dashboard,
+                                Icons.home,
+                                Icons.people,
+                                Icons.person,
+                                Icons.medical_services
+                              ][i],
+                              color: _selectedIndex == i
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              _titles[i],
+                              style: TextStyle(
+                                fontWeight: _selectedIndex == i
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: _selectedIndex == i
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.onSurface,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  const Spacer(),
+                ],
+              ),
             ),
           Expanded(
             child: AnimatedSwitcher(

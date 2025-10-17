@@ -48,24 +48,31 @@ class _RecordsPageState extends State<RecordsPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final isTablet = width >= 600;
+    final isWeb = width >= 800;
 
     return Scaffold(
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: loadRecords,
-              child: isTablet ? _buildGrid() : _buildList(),
+              child: isWeb ? _buildGridWithAddButton() : _buildList(),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openCreateRecordModal,
-        backgroundColor: Colors.teal,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isWeb
+          ? null
+          : FloatingActionButton(
+              onPressed: _openCreateRecordModal,
+              backgroundColor: Colors.teal,
+              child: const Icon(Icons.add),
+            ),
     );
   }
 
-  Widget _buildGrid() {
+  Widget _buildGridWithAddButton() {
+    final items = [
+      ...records,
+      {'isAddButton': true}
+    ];
+
     return GridView.builder(
       padding: const EdgeInsets.all(8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -74,10 +81,37 @@ class _RecordsPageState extends State<RecordsPage> {
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
-      itemCount: records.length,
+      itemCount: items.length,
       itemBuilder: (context, index) {
-        return _recordCard(records[index]);
+        final item = items[index];
+        if (item['isAddButton'] == true) {
+          return _addRecordCard();
+        }
+        return _recordCard(item);
       },
+    );
+  }
+
+  Widget _addRecordCard() {
+    return InkWell(
+      onTap: _openCreateRecordModal,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 3,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.add_box, size: 36, color: Colors.teal),
+              SizedBox(height: 8),
+              Text(
+                "Nuevo registro",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
