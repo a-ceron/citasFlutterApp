@@ -1,4 +1,5 @@
 // lib/config/router.dart
+import 'package:fclinc/screens/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,10 @@ GoRouter createRouter(BuildContext context) {
       GoRoute(
         path: '/login/success',
         builder: (context, state) => const LoginSuccessPage(),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfilePage(),
       ),
     ],
     errorBuilder: (context, state) => ErrorPage(state: state),

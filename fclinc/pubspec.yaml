@@ -47,6 +47,7 @@ dependencies:
   logger: ^2.6.2
   go_router: ^16.2.5
   url_launcher: ^6.2.1
+  table_calendar: ^3.0.9  # Calendar widget
   
 dev_dependencies:
   flutter_test:

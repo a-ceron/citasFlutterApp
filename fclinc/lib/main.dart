@@ -3,6 +3,7 @@
   Entry point for the FClinic Flutter Web App.
 */
 
+import 'package:fclinc/providers/google_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -26,6 +27,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => authProvider),
+        ChangeNotifierProvider(create: (_) => CalendarProvider()),
       ],
       child: const FClinicApp(),
     ),

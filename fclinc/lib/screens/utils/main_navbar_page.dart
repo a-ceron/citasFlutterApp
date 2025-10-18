@@ -1,3 +1,4 @@
+import 'package:fclinc/screens/calendar/calendar_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -18,21 +19,28 @@ class MainNavbarPage extends StatefulWidget {
 class _MainNavbarPageState extends State<MainNavbarPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    DashPage(),
-    RecordsPage(),
-    EmployeesPage(),
-    ClientsPage(),
-    ProceduresPage(),
-  ];
-
   final List<String> _titles = const [
     'Dash',
     'Registros',
     'Empleados',
     'Clientes',
     'Procedimientos',
+    'Calendario'
   ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const DashPage(),
+      const RecordsPage(),
+      const EmployeesPage(),
+      const ClientsPage(),
+      const ProceduresPage(),
+      const CalendarPage(), // You can keep it const for now if you fetch events inside CalendarPage via Provider
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -129,7 +137,8 @@ class _MainNavbarPageState extends State<MainNavbarPage> {
                                 Icons.home,
                                 Icons.people,
                                 Icons.person,
-                                Icons.medical_services
+                                Icons.medical_services,
+                                Icons.calendar_month
                               ][i],
                               color: _selectedIndex == i
                                   ? theme.colorScheme.primary
@@ -184,6 +193,8 @@ class _MainNavbarPageState extends State<MainNavbarPage> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.medical_services),
                     label: 'Procedimientos'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_month), label: 'Citas'),
               ],
             ),
     );
