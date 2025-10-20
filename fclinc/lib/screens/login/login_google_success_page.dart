@@ -64,7 +64,7 @@ class _LoginSuccessPageState extends State<LoginSuccessPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => MainNavbarPage()),
+          MaterialPageRoute(builder: (_) => const MainNavbarPage()),
         );
       }
     } catch (e) {

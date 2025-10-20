@@ -126,9 +126,9 @@ class _EmployeesPageState extends State<EmployeesPage> {
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: isNew
-              ? Column(
+              ? const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.add_box, size: 36, color: Colors.teal),
                     SizedBox(height: 8),
                     Text(

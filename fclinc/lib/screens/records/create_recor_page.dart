@@ -103,7 +103,7 @@ class _CreateRecordDialogState extends State<CreateRecordDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<int>(
-                value: _selectedClient,
+                initialValue: _selectedClient,
                 items: _clients
                     .map((c) => DropdownMenuItem<int>(
                         value: c['id'],
@@ -115,7 +115,7 @@ class _CreateRecordDialogState extends State<CreateRecordDialog> {
                     val == null ? 'Seleccione un paciente' : null,
               ),
               DropdownButtonFormField<int>(
-                value: _selectedProcedure,
+                initialValue: _selectedProcedure,
                 items: _procedures
                     .map((p) => DropdownMenuItem<int>(
                         value: p['id'], child: Text(p['name'])))
@@ -126,7 +126,7 @@ class _CreateRecordDialogState extends State<CreateRecordDialog> {
                     val == null ? 'Seleccione un procedimiento' : null,
               ),
               DropdownButtonFormField<int>(
-                value: _selectedEmployee,
+                initialValue: _selectedEmployee,
                 items: _employees
                     .map((e) => DropdownMenuItem<int>(
                         value: e['id'],

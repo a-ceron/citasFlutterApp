@@ -81,20 +81,20 @@ class _MainNavbarPageState extends State<MainNavbarPage> {
               }
             },
             itemBuilder: (context) => [
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 0,
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.person_outline, color: Colors.black54),
                     SizedBox(width: 8),
                     Text('Perfil'),
                   ],
                 ),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 1,
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.logout, color: Colors.red),
                     SizedBox(width: 8),
                     Text('Cerrar sesión'),

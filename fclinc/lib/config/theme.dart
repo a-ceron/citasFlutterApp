@@ -52,7 +52,7 @@ final lightTheme = ThemeData(
 
   // Configuración de la AppBar
   appBarTheme: const AppBarTheme(
-    color: Colors.white, // Color de fondo de la AppBar
+    backgroundColor: Colors.white, // Color de fondo de la AppBar
     elevation: 0, // Sombra
     iconTheme: IconThemeData(color: Colors.black87), // Color de los íconos
     titleTextStyle: TextStyle(
@@ -131,7 +131,7 @@ final darkTheme = ThemeData(
   ),
 
   // Typography Configuration
-  textTheme: TextTheme(
+  textTheme: const TextTheme(
     displayLarge: TextStyle(
         fontSize: 57, fontWeight: FontWeight.bold, color: Colors.white),
     displayMedium: TextStyle(
@@ -162,10 +162,10 @@ final darkTheme = ThemeData(
   ),
 
   // AppBar Configuration
-  appBarTheme: AppBarTheme(
-    color: const Color(0xFF1E1E1E), // AppBar background color
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xFF1E1E1E), // AppBar background color
     elevation: 2, // Shadow
-    iconTheme: const IconThemeData(color: Colors.white), // Icons color
+    iconTheme: IconThemeData(color: Colors.white), // Icons color
     titleTextStyle: TextStyle(
       color: Colors.white,
       fontSize: 20,

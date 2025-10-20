@@ -85,8 +85,9 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
                   onSaved: (v) => _formData['email'] = v,
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Requerido';
-                    if (!v.contains('@') || v.length > 120)
+                    if (!v.contains('@') || v.length > 120) {
                       return 'Email inválido';
+                    }
                     return null;
                   },
                 ),
@@ -102,7 +103,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
                 ),
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: 'Rol'),
-                  value: _selectedRole,
+                  initialValue: _selectedRole,
                   items: const [
                     DropdownMenuItem(value: 'doctor', child: Text('Doctor')),
                     DropdownMenuItem(value: 'nurse', child: Text('Nurse')),

@@ -32,6 +32,21 @@ class ApiService {
     }
   }
 
+  Future<bool> postGoogleToken(String token) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/google'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'token': token}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error en login Google: ${response.body}');
+    }
+
+    final data = jsonDecode(response.body);
+    return true;
+  }
+
   /// Nuevo método: login con Google OAuth
   Future<String?> loginWithGoogle(String code) async {
     final response = await http.post(
@@ -193,11 +208,16 @@ class ApiService {
   }
 
   Future<String> login(String email, String password) async {
+    print("Iniciando sesiòn");
+    print(Uri.parse('$baseUrl/auth/login'));
+
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
+    print("iniciando sesiòn");
+    print(response.body);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

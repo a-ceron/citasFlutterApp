@@ -98,10 +98,10 @@ class _RecordsPageState extends State<RecordsPage> {
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 3,
-        child: Center(
+        child: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Icon(Icons.add_box, size: 36, color: Colors.teal),
               SizedBox(height: 8),
               Text(

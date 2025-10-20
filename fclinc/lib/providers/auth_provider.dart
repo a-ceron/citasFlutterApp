@@ -93,7 +93,20 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       await _clearAuth();
-      errorMessage = e.toString();
+
+      // ------------------------------------------------------------------
+      // MODIFICACIÓN: Extraer un mensaje de error limpio y legible.
+      // ------------------------------------------------------------------
+      String errorText = e.toString();
+
+      // 1. Remueve el prefijo "Exception: " si está presente.
+      if (errorText.startsWith('Exception: ')) {
+        errorText = errorText.replaceFirst('Exception: ', '');
+      }
+
+      // 2. Establece el mensaje de error.
+      errorMessage = errorText;
+
       _setLoading(false);
       return false;
     }

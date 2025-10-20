@@ -1,7 +1,9 @@
 // lib/screens/profile/profile_page.dart
+import 'package:fclinc/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../providers/auth_provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -14,14 +16,45 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool _isSyncing = false;
 
-  Future<void> _syncGoogleAccount() async {
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+  );
+
+  Future<void> _syncWithGoogle() async {
     setState(() => _isSyncing = true);
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() => _isSyncing = false);
-    if (mounted) {
+    final api = ApiService();
+
+    try {
+      // Paso 1: Login con Google
+      final account = await _googleSignIn.signIn();
+      if (account == null) {
+        // El usuario canceló el login
+        setState(() => _isSyncing = false);
+        return;
+      }
+
+      // Paso 2: Obtener token de acceso
+      final auth = await account.authentication;
+      final token = auth.idToken;
+
+      // Paso 3: Enviar token al backend
+      Future<bool> response = api.postGoogleToken(token!);
+
+      if (await response) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cuenta sincronizada correctamente')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al sincronizar la cuenta')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cuenta de Google sincronizada')),
+        SnackBar(content: Text('Error: $e')),
       );
+    } finally {
+      setState(() => _isSyncing = false);
     }
   }
 
@@ -89,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             )
                           : IconButton(
                               icon: const Icon(Icons.refresh),
-                              onPressed: _syncGoogleAccount,
+                              onPressed: _syncWithGoogle,
                             ),
                     ),
                   ],

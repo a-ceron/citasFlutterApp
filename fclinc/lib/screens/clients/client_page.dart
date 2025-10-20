@@ -118,9 +118,9 @@ class _ClientsPageState extends State<ClientsPage> {
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: isNew
-              ? Column(
+              ? const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.add_box, size: 32, color: Colors.teal),
                     SizedBox(height: 8),
                     Text(

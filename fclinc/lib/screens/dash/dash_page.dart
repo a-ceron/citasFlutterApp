@@ -68,7 +68,7 @@ class _DashPageState extends State<DashPage> {
         _kpiCard('Total Generado', kpis['total_generado']?.toString() ?? '0'),
         _kpiCard(
             'Promedio', kpis['promedio_por_cita']?.toStringAsFixed(2) ?? '0'),
-        ...empleados.map((e) => _employeeCard(e)).toList(),
+        ...empleados.map((e) => _employeeCard(e)),
       ],
     );
   }
@@ -86,7 +86,7 @@ class _DashPageState extends State<DashPage> {
         _kpiCard(
             'Promedio', kpis['promedio_por_cita']?.toStringAsFixed(2) ?? '0'),
         const SizedBox(height: 16),
-        ...empleados.map((e) => _employeeCard(e)).toList(),
+        ...empleados.map((e) => _employeeCard(e)),
       ],
     );
   }
