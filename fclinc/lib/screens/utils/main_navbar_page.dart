@@ -1,7 +1,14 @@
-import 'package:fclinc/screens/calendar/calendar_page.dart';
+/**
+ * Pages/Utils/Nav.dart
+ * 
+ * Pagina principal que administra
+ * las diferentes vistas dispoonibles para el usuario
+ */
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:fclinc/screens/calendar/calendar_page.dart';
+
 import '../../providers/auth_provider.dart';
 import '../employee/employees_page.dart';
 import '../clients/client_page.dart';
@@ -19,7 +26,7 @@ class MainNavbarPage extends StatefulWidget {
 class _MainNavbarPageState extends State<MainNavbarPage> {
   int _selectedIndex = 0;
 
-  final List<String> _titles = const [
+  final List<String> _titles = [
     'Dash',
     'Registros',
     'Empleados',
@@ -32,14 +39,42 @@ class _MainNavbarPageState extends State<MainNavbarPage> {
   @override
   void initState() {
     super.initState();
-    _pages = [
-      const DashPage(),
-      const RecordsPage(),
-      const EmployeesPage(),
-      const ClientsPage(),
-      const ProceduresPage(),
-      const CalendarPage(), // You can keep it const for now if you fetch events inside CalendarPage via Provider
+
+    final allPages = [
+      {'widget': const DashPage(), 'level': 3},
+      {'widget': const RecordsPage(), 'level': 4},
+      {'widget': const EmployeesPage(), 'level': 2},
+      {'widget': const ClientsPage(), 'level': 3},
+      {'widget': const ProceduresPage(), 'level': 2},
+      {'widget': const CalendarPage(), 'level': 4},
     ];
+
+    final allTitles = [
+      'Dash',
+      'Registros',
+      'Empleados',
+      'Clientes',
+      'Procedimientos',
+      'Calendario'
+    ];
+
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    print(auth.user);
+    final userLevel = auth.user?.level ?? 4;
+
+    _pages = [];
+    _titles.clear();
+
+    for (var i = 0; i < allPages.length; i++) {
+      // 🔹 Cast to int to satisfy Dart's type system
+      final pageLevel = allPages[i]['level'] as int;
+      if (userLevel <= pageLevel) {
+        _pages.add(allPages[i]['widget'] as Widget);
+        _titles.add(allTitles[i]);
+      }
+    }
+
+    _selectedIndex = 0;
   }
 
   void _onItemTapped(int index) {

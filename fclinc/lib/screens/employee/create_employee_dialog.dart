@@ -105,9 +105,12 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
                   decoration: const InputDecoration(labelText: 'Rol'),
                   initialValue: _selectedRole,
                   items: const [
-                    DropdownMenuItem(value: 'doctor', child: Text('Doctor')),
-                    DropdownMenuItem(value: 'nurse', child: Text('Nurse')),
-                    DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                    DropdownMenuItem(
+                        value: 'encargado', child: Text('Encargado clinico')),
+                    DropdownMenuItem(
+                        value: 'graduado', child: Text('Residente')),
+                    DropdownMenuItem(
+                        value: 'practicante', child: Text('Pasante')),
                   ],
                   onChanged: (v) => setState(() => _selectedRole = v),
                   validator: (v) =>

@@ -1,19 +1,16 @@
+/**
+ * Providers/Auth.dart
+ * 
+ * Permite configurar el provider para 
+ * realizar el inicio de sesión de forma
+ * exitosa
+ */
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../services/api_service.dart';
-
-class User {
-  final String firstName;
-  final String lastName;
-  final String email;
-
-  User({
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-  });
-}
+import '../models/user.dart';
 
 class AuthProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -85,9 +82,10 @@ class AuthProvider extends ChangeNotifier {
     errorMessage = null;
 
     try {
-      final token = await _apiService.login(email, password);
-      await _saveToken(token);
-      await _loadUser(token);
+      final userData = await _apiService.login(email, password);
+      await _saveToken(userData['access_token']);
+      await _loadUser(userData);
+      await _saveRole(userData['user']['level']);
 
       _setLoading(false);
       return true;
@@ -129,13 +127,18 @@ class AuthProvider extends ChangeNotifier {
     await prefs.setString('access_token', token);
   }
 
-  Future<void> _loadUser(String token) async {
-    final userData = await _apiService.getMe(token);
+  Future<void> _saveRole(int role) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('level', role);
+  }
+
+  Future<void> _loadUser(final userData) async {
     _user = User(
-      firstName: userData['first_name'] ?? '',
-      lastName: userData['last_name'] ?? '',
-      email: userData['email'] ?? '',
-    );
+        firstName: userData['user']['first_name'] ?? '',
+        lastName: userData['user']['last_name'] ?? '',
+        email: userData['user']['email'] ?? '',
+        token: userData['access_token'] ?? '',
+        level: userData['user']['level'] ?? 0);
     notifyListeners();
   }
 

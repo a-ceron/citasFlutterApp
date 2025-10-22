@@ -207,21 +207,15 @@ class ApiService {
     }
   }
 
-  Future<String> login(String email, String password) async {
-    print("Iniciando sesiòn");
-    print(Uri.parse('$baseUrl/auth/login'));
-
+  Future<Map<String, dynamic>> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
-    print("iniciando sesiòn");
-    print(response.body);
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['access_token'];
+      return jsonDecode(response.body);
     } else {
       throw Exception('Error al iniciar sesión');
     }

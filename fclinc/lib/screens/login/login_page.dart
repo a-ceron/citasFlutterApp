@@ -1,3 +1,10 @@
+/**
+ * Pages/Login/LoginPage.dart
+ * 
+ * Widget que define el login principal
+ * de la aplicación para iniciar sesión.
+ * 
+ */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   final _emailFocusNode = FocusNode();
 
   String? _emailError;

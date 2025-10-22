@@ -25,10 +25,7 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => authProvider),
-        ChangeNotifierProvider(create: (_) => CalendarProvider()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => authProvider)],
       child: const FClinicApp(),
     ),
   );
